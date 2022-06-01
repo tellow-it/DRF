@@ -25,6 +25,21 @@ class StudentSerializer(serializers.Serializer):
     group_id = serializers.IntegerField()  # json! поэтму не ForeighKey
     score = serializers.IntegerField(default=2)
 
+    def create(self, validated_data):
+        return Student.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.number = validated_data.get('number', instance.number)
+        instance.name = validated_data.get('name', instance.name)
+        instance.surname = validated_data.get('surname', instance.surname)
+        instance.father = validated_data.get('father', instance.father)
+        instance.time_enter = validated_data.get('time_enter', instance.time_enter)
+        instance.group_id = validated_data.get('group_id', instance.group_id)
+        instance.score = validated_data.get('score', instance.score)
+        instance.save()
+        return instance
+
+
 # кодирование
 # def encode():
 #     model = StudentModel(845432, 'I', 'T', 'A', 5)

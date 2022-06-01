@@ -21,13 +21,33 @@ class StudentApiView(APIView):
     def post(self, request):
         serializer = StudentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        post_new = Student.objects.create(
-            number=request.data['number'],
-            name=request.data['name'],
-            surname=request.data['surname'],
-            father=request.data['father'],
-            time_enter=request.data['time_enter'],
-            group_id=request.data['group_id'],
-            score=request.data['score']
-        )
-        return Response({'post': StudentSerializer(post_new).data})
+        serializer.save()
+        return Response({'post': serializer.data})
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({"error": "Method PUT npt allowed"})
+
+        try:
+            instance = Student.objects.get(pk=pk)
+        except:
+            return StudentSerializer({"error": "Object does not exists"})
+
+        serializer = StudentSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"post": serializer.data})
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({"error": "Method DELETE not allowed"})
+
+        try:
+            student_del = Student.objects.get(pk=pk)
+        except:
+            return StudentSerializer({"error": "Object does not exists"})
+
+        student_del.delete()
+        return Response({"message": "Success delete"})
