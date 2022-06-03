@@ -13,6 +13,10 @@ from main.serializers import StudentSerializer
 #     queryset = Student.objects.all()
 #     serializer_class = StudentSerializer
 
+class StudentAPIList(generics.ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
 class StudentApiView(APIView):
     def get(self, request):
         s = Student.objects.all()
