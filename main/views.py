@@ -17,41 +17,50 @@ class StudentAPIList(generics.ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-class StudentApiView(APIView):
-    def get(self, request):
-        s = Student.objects.all()
-        return Response({'students': StudentSerializer(s, many=True).data})
 
-    def post(self, request):
-        serializer = StudentSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'post': serializer.data})
+class StudentAPIUpdate(generics.UpdateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
 
-    def put(self, request, *args, **kwargs):
-        pk = kwargs.get('pk', None)
-        if not pk:
-            return Response({"error": "Method PUT npt allowed"})
 
-        try:
-            instance = Student.objects.get(pk=pk)
-        except:
-            return StudentSerializer({"error": "Object does not exists"})
-
-        serializer = StudentSerializer(data=request.data, instance=instance)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"post": serializer.data})
-
-    def delete(self, request, *args, **kwargs):
-        pk = kwargs.get('pk', None)
-        if not pk:
-            return Response({"error": "Method DELETE not allowed"})
-
-        try:
-            student_del = Student.objects.get(pk=pk)
-        except:
-            return StudentSerializer({"error": "Object does not exists"})
-
-        student_del.delete()
-        return Response({"message": "Success delete"})
+class StudentAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+# class StudentApiView(APIView):
+#     def get(self, request):
+#         s = Student.objects.all()
+#         return Response({'students': StudentSerializer(s, many=True).data})
+#
+#     def post(self, request):
+#         serializer = StudentSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response({'post': serializer.data})
+#
+#     def put(self, request, *args, **kwargs):
+#         pk = kwargs.get('pk', None)
+#         if not pk:
+#             return Response({"error": "Method PUT npt allowed"})
+#
+#         try:
+#             instance = Student.objects.get(pk=pk)
+#         except:
+#             return StudentSerializer({"error": "Object does not exists"})
+#
+#         serializer = StudentSerializer(data=request.data, instance=instance)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response({"post": serializer.data})
+#
+#     def delete(self, request, *args, **kwargs):
+#         pk = kwargs.get('pk', None)
+#         if not pk:
+#             return Response({"error": "Method DELETE not allowed"})
+#
+#         try:
+#             student_del = Student.objects.get(pk=pk)
+#         except:
+#             return StudentSerializer({"error": "Object does not exists"})
+#
+#         student_del.delete()
+#         return Response({"message": "Success delete"})
