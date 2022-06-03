@@ -18,13 +18,17 @@ from django.urls import path, include
 from rest_framework import routers
 from main.views import *
 
-router = routers.DefaultRouter()
-router.register(r'student', StudentViewSet, basename='student')
-print((router.urls))
+# router = routers.DefaultRouter()
+# router.register(r'student', StudentViewSet, basename='student')
+# print(router.urls)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls))
-    # path('api/v1/studentlist/', StudentViewSet.as_view({'get': 'list'})),
-    # path('api/v1/studentlist/<int:pk>/', StudentViewSet.as_view({'put': 'update'})),
+    path('api/v1/student/', StudentAPIList.as_view()),
+    path('api/v1/student/<int:pk>/', StudentAPIUpdate.as_view()),
+    path('api/v1/student/<int:pk>/delete/', StudentAPIDestroy.as_view()),
+
+    # path('api/v1/', include(router.urls))
+    # # path('api/v1/studentlist/', StudentViewSet.as_view({'get': 'list'})),
+    # # path('api/v1/studentlist/<int:pk>/', StudentViewSet.as_view({'put': 'update'})),
 ]
