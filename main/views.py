@@ -22,7 +22,7 @@ class StudentAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, )
+    # authentication_classes = (TokenAuthentication, )
 
 
 class StudentAPIDestroy(generics.RetrieveDestroyAPIView):
