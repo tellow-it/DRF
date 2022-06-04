@@ -8,9 +8,8 @@ from rest_framework import serializers
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Student
-        fields = ("number", "name", 'surname', 'father', 'time_enter',
-                  'group', 'score')
-
-
+        fields = '__all__'

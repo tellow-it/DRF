@@ -1,66 +1,41 @@
 from django.forms import model_to_dict
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, viewsets
 # Create your views here.
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from main.models import Student
+from .permissions import *
+from main.models import Student, Group
 from main.serializers import StudentSerializer
 
+class StudentAPIListPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 5
 
-# class StudentApiView(generics.ListAPIView):
-#     queryset = Student.objects.all()
-#     serializer_class = StudentSerializer
 
 class StudentAPIList(generics.ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)  # для авторизованных ползователей
+    pagination_class = StudentAPIListPagination
 
 
-class StudentAPIUpdate(generics.UpdateAPIView):
+
+class StudentAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = (IsAuthenticated, )
+    # authentication_classes = (TokenAuthentication, )
 
 
-class StudentAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+class StudentAPIDestroy(generics.RetrieveDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-# class StudentApiView(APIView):
-#     def get(self, request):
-#         s = Student.objects.all()
-#         return Response({'students': StudentSerializer(s, many=True).data})
-#
-#     def post(self, request):
-#         serializer = StudentSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response({'post': serializer.data})
-#
-#     def put(self, request, *args, **kwargs):
-#         pk = kwargs.get('pk', None)
-#         if not pk:
-#             return Response({"error": "Method PUT npt allowed"})
-#
-#         try:
-#             instance = Student.objects.get(pk=pk)
-#         except:
-#             return StudentSerializer({"error": "Object does not exists"})
-#
-#         serializer = StudentSerializer(data=request.data, instance=instance)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response({"post": serializer.data})
-#
-#     def delete(self, request, *args, **kwargs):
-#         pk = kwargs.get('pk', None)
-#         if not pk:
-#             return Response({"error": "Method DELETE not allowed"})
-#
-#         try:
-#             student_del = Student.objects.get(pk=pk)
-#         except:
-#             return StudentSerializer({"error": "Object does not exists"})
-#
-#         student_del.delete()
-#         return Response({"message": "Success delete"})
+    permission_classes = (IsAdminOrReadOnly,)  # только для администратора
+
+
